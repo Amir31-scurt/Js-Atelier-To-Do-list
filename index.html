@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="bg-secondary bg-opacity-25">
+    <div class="container w-50 bg-light ToDoList border border-success border-opacity-50 border-3 rounded p-3 my-5">
+        <div class="align-items-center justify-content-center mt-3">
+            <h3 class="mb-3">TODO App</h3>
+            <div class="bg-success bg-opacity-25 d-flex align-items-center justify-content-between p-1 rounded" id="AddTask" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <span>Add New Task</span>
+                <i class="fa-solid fa-plus text-bg-success fa-fade p-1 rounded text-dark fs-5"></i>
+            </div>
+            <h5 class="my-3 text-center">Tâches</h5>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Tâche à faire</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 tache">
+                            <label for="tache" class="form-label">Tâche : </label>
+                            <input type="text" class="form-control" id="tache">
+                        </div>
+                        <div class="mb-3 Date">
+                            <label for="Date" class="form-label">Date : </label>
+                            <input type="date" class="form-control" id="Date">
+                        </div>
+                        <div class="mb-3 commentaire">
+                            <label for="comments" class="form-label">Commentaire</label>
+                            <textarea class="form-control" placeholder="Un commentaire" id="comments" style="height: 100px"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                      <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="button" onclick="AddToBoard()">Enregistrer</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div id="tasks" class="d-grid gap-3">
+                
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script>
+        let TaskInput = document.getElementById("tache");
+let DateInput = document.getElementById("Date");
+let CommentInput = document.getElementById("comments");
+let tasks = document.getElementById("tasks");
+const button = document.getElementById('button');
+button.setAttribute('disabled', '');
+function enableButton() {
+    const taskValue = TaskInput.value;
+    const dateValue = DateInput.value;
+
+    if (taskValue.length > 3 && dateValue.length > 3) {
+        button.removeAttribute('disabled');
+    } else {
+        button.setAttribute('disabled', '');
+    }
+}
+
+TaskInput.addEventListener("input", enableButton);
+DateInput.addEventListener("input", enableButton);
+
+window.addEventListener("load", () => {
+    tasks.innerHTML = localStorage.getItem("TasksStorage") || "";
+});
+
+function TaskToLocStor() {
+    localStorage.setItem("TasksStorage", tasks.innerHTML);
+}
+function AddToBoard(){     
+    // insert tasks;
+    tasks.innerHTML += `
+    <div class="bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3">
+        <span class="fw-bold text-">${TaskInput.value}</span>
+        <span class="text-secondary small">${DateInput.value}</span>
+        <p class="m-0 p-0">${CommentInput.value}</p>
+        <span class="option justify-content-center d-flex gap-4">
+            <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+            <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
+        </span>
+    </div>`;
+
+    TaskToLocStor()
+
+    TaskInput.value = "";
+    DateInput.value = "";
+    CommentInput.value = "";
+    enableButton();
+}
+// Delete Task
+function Delete (e){
+    e.parentElement.parentElement.remove();
+    const tk = "TasksStorage";
+    localStorage.removeItem(tk);
+    TaskToLocStor();
+}
+// Modify Task
+function Modify(e){
+    e.parentElement.parentElement.remove(); 
+    CommentInput.value = e.parentElement.previousElementSibling.innerHTML;
+    DateInput.value = e.parentElement.previousElementSibling.previousElementSibling.innerHTML;
+    TaskInput.value = e.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.innerHTML;
+    enableButton();
+    TaskToLocStor();
+}
+    </script>
+</body>

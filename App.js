@@ -107,47 +107,23 @@ function Delete(e) {
     e.parentElement.parentElement.remove();
 }
 
-function Modify(e) {
-    let editing = button.textContent == "Enregistrer";
+function Modify(e){
     // Identify the element by ID
     const taskId = e.parentElement.parentElement.querySelector('.fw-bold').classList[1];
     const taskToModify = ToDoTasks.find(task => task.id === parseInt(taskId));
 
-    if (editing) {
-        // Save the modified task
-        taskToModify.task = TaskInput.value;
-        taskToModify.date = DateInput.value;
-        taskToModify.comment = CommentInput.value;
-
-        // Update local storage with the modified ToDoTasks array
-        AddToLclStr();
-
-        // Update the task in the DOM
-        const taskElement = e.parentElement.parentElement;
-        taskElement.querySelector('.fw-bold').textContent = TaskInput.value;
-        taskElement.querySelector('.text-secondary').textContent = DateInput.value;
-        taskElement.querySelector('p').textContent = CommentInput.value;
-
-        // Toggle between editing and saving
-        button.textContent = "Modifier";
-    } else {
-        // Open Modal to Edit Task
-        AddTask();
-        TaskInput.value = taskToModify.task;
-        DateInput.value = taskToModify.date;
-        CommentInput.value = taskToModify.comment;
-        enableButton();
-
-        // Remove the task from the array and from the DOM
-        ToDoTasks = ToDoTasks.filter(task => task.id !== parseInt(taskId));
-        e.parentElement.parentElement.remove();
-
-        // Update local storage with the modified ToDoTasks array
-        AddToLclStr();
-
-        // Toggle between editing and saving
-        button.textContent = "Enregistrer";
-    }
+    // Open Modal to Add Task
+    AddTask();
+    TaskInput.value = taskToModify.task;
+    DateInput.value = taskToModify.date;
+    CommentInput.value = taskToModify.comment;
+    enableButton();
+    // Remove the task from the array and from the DOM
+    ToDoTasks = ToDoTasks.filter(task => task.id !== parseInt(taskId));
+    e.parentElement.parentElement.remove();
+    
+    // Update local storage with the modified ToDoTasks array
+    AddToLclStr();
 }
 
 function Checked(e) {

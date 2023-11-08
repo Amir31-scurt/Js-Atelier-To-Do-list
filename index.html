@@ -169,7 +169,6 @@ function Delete(e) {
 }
 
 function Modify(e) {
-    let editing = button.textContent == "Enregistrer";
     // Identify the element by ID
     const taskId = e.parentElement.parentElement.querySelector('.fw-bold').classList[1];
     const taskToModify = ToDoTasks.find(task => task.id === parseInt(taskId));

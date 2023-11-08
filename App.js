@@ -53,21 +53,23 @@ function AddToBoard() {
     // Insert tasks
     tasks.innerHTML += `
     <li class="bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
-        <span class="fw-bold ${Todo.id}">${Todo.task}</span>
-        <span class="text-secondary small">${Todo.date}</span>
-        <p class="m-0 p-0">${Todo.comment}</p>
-        <span class="option justify-content-center d-flex gap-4">
-            <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
-            <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
-            <div class="chkd">
-                <i class="fa-solid fa-check fs-5" id="delete" onclick="Checked(this)" style="cursor: pointer;"></i>
-            </div>
-        </span>
-        <div class="btns d-flex gap-3 justify-content-center">
-            <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks()">Archiver</button>
-            <button class="btn btn-outline-success btn-sm" id="showArchivedButton" onclick="ShowTasks()">Voir les Tâches Archivées</button>
-        </div>
-    </li>`;
+                    <span class="fw-bold ${Todo.id}">${Todo.task}</span>
+                    <span class="text-secondary small">${Todo.date}</span>
+                    <p class="m-0 p-0">${Todo.comment}</p>
+                    <div class="option mx-5 justify-content-between d-flex gap-4 align-items-center">
+                        <div class="btns d-flex gap-3 justify-content-center">
+                            <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks()"><i class="fa-solid fa-box-archive"></i></button>
+                            <button class="btn btn-outline-success btn-sm" id="showArchivedButton" onclick="ShowTasks()"><i class="fa-solid fa-inbox"></i></button>
+                        </div>
+                        <div class="op1 d-flex gap-3 justify-content-center">
+                            <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
+                            <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
+                            <div class="chkd">
+                                <i class="fa-solid fa-check fs-5" id="delete" onclick="Checked(this)" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </li>`;
 
     TaskInput.value = "";
     DateInput.value = "";
@@ -82,21 +84,23 @@ window.addEventListener("load", () => {
         for (const task of ToDoTasks) {
             tasks.innerHTML += `
             <li class="bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
-                <span class="fw-bold ${task.id}">${task.task}</span>
-                <span class="text-secondary small">${task.date}</span>
-                <p class="m-0 p-0">${task.comment}</p>
-                <span class="option justify-content-center d-flex gap-4">
-                    <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
-                    <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
-                    <div class="chkd">
-                        <i class="fa-solid fa-check fs-5" id="delete" onclick="Checked(this)" style="cursor: pointer;"></i>
+                    <span class="fw-bold ${task.id}">${task.task}</span>
+                    <span class="text-secondary small">${task.date}</span>
+                    <p class="m-0 p-0">${task.comment}</p>
+                    <div class="option mx-5 justify-content-between d-flex gap-4 align-items-center">
+                        <div class="btns d-flex gap-3 justify-content-center">
+                            <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks()"><i class="fa-solid fa-box-archive"></i></button>
+                            <button class="btn btn-outline-success btn-sm" id="showArchivedButton" onclick="ShowTasks()"><i class="fa-solid fa-inbox"></i></button>
+                        </div>
+                        <div class="op1 d-flex gap-3 justify-content-center">
+                            <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
+                            <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
+                            <div class="chkd">
+                                <i class="fa-solid fa-check fs-5" id="delete" onclick="Checked(this)" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
                     </div>
-                </span>
-                <div class="btns d-flex gap-3 justify-content-center">
-                    <button class="btn btn-success" id="archiveButton" onclick="ArchiveTasks()">Archiver</button>
-                    <button class="btn btn-outline-success" id="showArchivedButton" onclick="ShowTasks()">Voir les Tâches Archivées</button>
-                </div>
-            </li>`;
+                </li>`;
         }
     }
 });

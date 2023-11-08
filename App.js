@@ -61,9 +61,12 @@ function AddToBoard() {
             <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
             <div class="chkd">
                 <i class="fa-solid fa-check fs-5" id="delete" onclick="Checked(this)" style="cursor: pointer;"></i>
-                <button id="archiveButton" onclick="ArchiveCompletedTasks()">Archive Completed Tasks</button>
             </div>
         </span>
+        <div class="btns d-flex gap-3 justify-content-center">
+            <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks()">Archiver</button>
+            <button class="btn btn-outline-success btn-sm" id="showArchivedButton" onclick="ShowTasks()">Voir les Tâches Archivées</button>
+        </div>
     </li>`;
 
     TaskInput.value = "";
@@ -87,9 +90,12 @@ window.addEventListener("load", () => {
                     <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
                     <div class="chkd">
                         <i class="fa-solid fa-check fs-5" id="delete" onclick="Checked(this)" style="cursor: pointer;"></i>
-                        <button id="archiveButton" onclick="ArchiveCompletedTasks()">Archive Completed Tasks</button>
                     </div>
                 </span>
+                <div class="btns d-flex gap-3 justify-content-center">
+                    <button class="btn btn-success" id="archiveButton" onclick="ArchiveTasks()">Archiver</button>
+                    <button class="btn btn-outline-success" id="showArchivedButton" onclick="ShowTasks()">Voir les Tâches Archivées</button>
+                </div>
             </li>`;
         }
     }
@@ -139,7 +145,7 @@ function Checked(e) {
     }
 }
 
-function ArchiveTasks() {
+function ArchiveTasks(e) {
     // Get all task elements with the "done" class
     const completedTaskElements = document.querySelectorAll(".done");
 

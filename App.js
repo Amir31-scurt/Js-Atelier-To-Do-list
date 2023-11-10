@@ -1,3 +1,4 @@
+// HTML element references
 let TaskInput = document.getElementById("tache");
 let DateInput = document.getElementById("Date");
 let CommentInput = document.getElementById("comments");
@@ -7,15 +8,18 @@ const button = document.getElementById('button');
 button.setAttribute('disabled', '');
 const modal = document.getElementById("Modal");
 
+// Open the task input modal
 function AddTask() {
     modal.style.display = 'block';
     TaskInput.focus();
 }
 
+// Close the task input modal
 function CloseAdd() {
     modal.style.display = 'none';
 }
 
+// Enable the button based on input values
 function enableButton() {
     const taskValue = TaskInput.value;
     const dateValue = DateInput.value;
@@ -30,10 +34,12 @@ function enableButton() {
 TaskInput.addEventListener("input", enableButton);
 DateInput.addEventListener("input", enableButton);
 
+// Save tasks to local storage
 function AddToLclStr() {
     localStorage.setItem("TasksStorage", JSON.stringify(ToDoTasks));
 }
 
+// Add a new task to the task list
 function AddToBoard() {
     const Todo = {
         id: Math.floor(Math.random() * 1024) + 1,
@@ -41,25 +47,17 @@ function AddToBoard() {
         date: DateInput.value,
         comment: CommentInput.value
     };
-    // Convert tasks details to an array
+
     ToDoTasks.push(Todo);
-
-    // Save to local storage
     AddToLclStr();
-
-    // Close modal
     CloseAdd();
 
-    // Insert tasks
     tasks.innerHTML += `
-    <li class="bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
-        <span class="fw-bold ${Todo.id}">${Todo.task}</span>
-        <span class="text-secondary small">${Todo.date}</span>
-        <p class="m-0 p-0">${Todo.comment}</p>
+    <li class="NewTask bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
+        <span class="fw-bold ${Todo.id}" id="task">${Todo.task}</span>
+        <span class="text-secondary small" id="date">${Todo.date}</span>
+        <p class="m-0 p-0" id="comment">${Todo.comment}</p>
         <div class="option justify-content-between d-flex gap-4 align-items-center">
-            <div class="btns d-flex gap-3 justify-content-center">
-                <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks()"><i class="fa-solid fa-box-archive"></i></button>
-            </div>
             <div class="op1 d-flex gap-3 justify-content-center">
                 <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
                 <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
@@ -75,34 +73,34 @@ function AddToBoard() {
     CommentInput.value = "";
     enableButton();
 }
-load();
-function load(){
-    window.addEventListener("load", () => {
-        const storedTasks = localStorage.getItem("TasksStorage");
-        if (storedTasks) {
-            ToDoTasks = JSON.parse(storedTasks);
-            for (const task of ToDoTasks) {
-                tasks.innerHTML += `
-                <li class="bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
-                    <span class="fw-bold ${task.id}">${task.task}</span>
-                    <span class="text-secondary small">${task.date}</span>
-                    <p class="m-0 p-0">${task.comment}</p>
-                    <div class="option justify-content-between d-flex gap-4 align-items-center">
-                        <div class="btns d-flex gap-3 justify-content-center">
-                            <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks()"><i class="fa-solid fa-box-archive"></i></button>
-                        </div>
-                        <div class="op1 d-flex gap-3 justify-content-center">
-                            <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
-                            <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
-                            <div class="chkd">
-                                <i class="fa-solid fa-check fs-5" id="check" onclick="Checked(this)" style="cursor: pointer;"></i>
-                            </div>
+
+// Load tasks from local storage when the page is loaded
+window.addEventListener("load", load);
+
+function load() {
+    const storedTasks = localStorage.getItem("TasksStorage");
+
+    if (storedTasks) {
+        ToDoTasks = JSON.parse(storedTasks);
+
+        for (const task of ToDoTasks) {
+            tasks.innerHTML += `
+            <li class="loadTasks bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
+                <span class="fw-bold ${task.id}" id="task">${task.task}</span>
+                <span class="text-secondary small" id="date">${task.date}</span>
+                <p class="m-0 p-0" id="comment">${task.comment}</p>
+                <div class="option justify-content-between d-flex gap-4 align-items-center">
+                    <div class="op1 d-flex gap-3 justify-content-center">
+                        <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
+                        <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
+                        <div class="chkd">
+                            <i class="fa-solid fa-check fs-5" id="check" onclick="Checked(this)" style="cursor: pointer;"></i>
                         </div>
                     </div>
-                </li>`;
-            }
+                </div>
+            </li>`;
         }
-    });
+    }
 }
 
 // Delete Task
@@ -164,62 +162,76 @@ function Modify(e) {
 }
 
 
+let archbtn = `
+  <div class="btns arch d-flex gap-3 justify-content-center">
+    <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks(this)">
+      <i class="fa-solid fa-box-archive"></i>
+    </button>
+  </div>
+`;
+
+// Load archived tasks from local storage and apply necessary class changes
+const archivedTasks = JSON.parse(localStorage.getItem("ArchivedTasks") || "[]");
+
+archivedTasks.forEach((task) => {
+  const taskElement = document.querySelector(`.fw-bold`);
+  
+  if (taskElement !== null) {
+    taskElement.classList.add("archivedTask");
+  }
+});
+
+// Load checked tasks from local storage and apply necessary class changes
+const checkedTasks = localStorage.getItem("CheckedTasks") || "[]";
+
+JSON.parse(checkedTasks).forEach((task) => {
+  const taskElement = document.querySelector(`.fw-bold`);
+
+  if (taskElement !== null) {
+    taskElement.classList.add("checked");
+  }
+});
+
 function Checked(e) {
-    // Add the "done" class
-    const TskElem = e.parentElement.parentElement.parentElement.parentElement;
-    TskElem.classList.add("done");
+  const taskElement = e.parentElement.parentElement;
+  taskElement.classList.add("done");
 
-    // Create an object to store the task's class list
-    const TaskInLcl = {
-        id: Math.floor(Math.random() * 1024) + 1,
-        TskClass: Array.from(TskElem.classList)
-    };
+  const newClass = taskElement.parentElement;
+  newClass.innerHTML += archbtn;
 
-    // Retrieve the class list from the clicked task element
-    const taskClassList = TaskInLcl.TskClass;
+  // Store the checked task in local storage
+  const checkedTask = e.parentElement.parentElement.parentElement;
+  localStorage.setItem(`CheckedTasks`, JSON.stringify(checkedTask.textContent));
 
-    // Identify the element by ID
-    const taskId = e.parentElement.parentElement.parentElement.querySelector('.fw-bold').classList[1];
-    const taskToModify = ToDoTasks.find(task => task.id === parseInt(taskId));
-
-    // Retrieve the stored checked tasks from local storage
-    const CheckedTasks = JSON.parse(localStorage.getItem("CheckedTask")) || [];
-
-    // Add the new checked task to the existing array
-    CheckedTasks.push(taskClassList);
-
-    // Store the updated array in local storage
-    localStorage.setItem("CheckedTask", JSON.stringify(CheckedTasks));
-
-    // Clear the existing class list and apply the classes from the local storage
-    TskElem.classList = "";
-    TskElem.classList.add(...taskClassList);
-
-    console.log(TskElem.classList);
+  // Call the checkedTsk() function
+  checkedTsk();
 }
 
-
-
-
-
 function ArchiveTasks(e) {
-    // Get all completed tasks from the state management system
-    const completedTasks = stateManager.getCompletedTasks();
+  const taskElement = e.parentElement.parentElement.parentElement.parentElement;
+  taskElement.classList.add("archived");
 
-    completedTasks.forEach(task => {
-        // Remove the task from the ToDoTasks array
-        ToDoTasks = ToDoTasks.filter(t => t.id !== task.id);
+  const taskId = taskElement.querySelector(".fw-bold").classList[1];
+  const taskData = {
+    id: taskId,
+    task: taskElement.querySelector(".fw-bold").textContent,
+    date: taskElement.querySelector(".text-secondary").textContent,
+    comment: taskElement.querySelector(".m-0").textContent,
+  };
 
-        // Remove the task element from the DOM
-        const taskElement = document.querySelector(`.${task.id}`);
-        if (taskElement) {
-            taskElement.remove();
-        }
-    });
+  const archivedTasks = JSON.parse(localStorage.getItem("ArchivedTasks") || "[]");
+  archivedTasks.push(taskData);
 
-    // Update local storage with the modified ToDoTasks array
-    AddToLclStr();
+  localStorage.setItem("ArchivedTasks", JSON.stringify(archivedTasks));
 
-    // Store the completed tasks in the "ArchivedTasksStorage"
-    AddToArchivedStorage(completedTasks);
+  taskElement.remove();
+}
+
+function checkedTsk() {
+  const done = [];
+
+  const doneTaskElements = document.querySelectorAll(".done");
+  done.push(...doneTaskElements);
+
+  localStorage.setItem("StockChecked", JSON.stringify(done));
 }

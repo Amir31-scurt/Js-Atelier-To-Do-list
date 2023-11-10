@@ -76,3 +76,46 @@ h3, p, span{
         width: 100%;
     }
 }
+.NewTask{
+    animation: 1s cubic-bezier(.25, 1, .30, 1) square-in-hesitate both;
+}
+@keyframes square-in-hesitate {
+  0% {
+    clip-path: inset(100% 100% 100% 100%);
+  }
+  40% {
+    clip-path: inset(33% 33% 33% 33%);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.loadTasks{
+    animation: 1s wipe-cinematic-in;
+}
+@keyframes wipe-cinematic-in {
+    0% {
+      clip-path: inset(100% 0 100% 0);
+    }
+    30%, 70% {
+      clip-path: inset(10% 0 10% 0);
+    }
+    100% {
+      clip-path: inset(0 0 0 0);
+    }
+}
+@keyframes diamond-in-hesitate {
+    0% {
+      clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
+    }
+    50% {
+      clip-path: polygon(45% 50%, 50% 25%, 55% 50%, 50% 75%);
+    }
+    100% {
+      clip-path: polygon(-50% 50%, 50% -50%, 150% 50%, 50% 150%);
+    }
+  }
+  
+.arch{
+    animation: 1s cubic-bezier(.25, 1, .30, 1) diamond-in-hesitate both;
+}

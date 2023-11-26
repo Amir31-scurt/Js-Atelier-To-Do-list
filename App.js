@@ -3,7 +3,9 @@ let TaskInput = document.getElementById("tache");
 let DateInput = document.getElementById("Date");
 let CommentInput = document.getElementById("comments");
 let tasks = document.getElementById("tasks");
+let archivedTasks = document.getElementById("archivedTasks");
 let ToDoTasks = [];
+let ArchivedTask = [];
 const button = document.getElementById('button');
 button.setAttribute('disabled', '');
 const modal = document.getElementById("Modal");
@@ -37,6 +39,7 @@ DateInput.addEventListener("input", enableButton);
 // Save tasks to local storage
 function AddToLclStr() {
     localStorage.setItem("TasksStorage", JSON.stringify(ToDoTasks));
+    
 }
 
 // Add a new task to the task list
@@ -45,7 +48,9 @@ function AddToBoard() {
         id: Math.floor(Math.random() * 1024) + 1,
         task: TaskInput.value,
         date: DateInput.value,
-        comment: CommentInput.value
+        comment: CommentInput.value,
+        statut : false,
+        archive : false
     };
 
     ToDoTasks.push(Todo);
@@ -54,9 +59,9 @@ function AddToBoard() {
 
     tasks.innerHTML += `
     <li class="NewTask bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
-        <span class="fw-bold ${Todo.id}" id="task">${Todo.task}</span>
-        <span class="text-secondary small" id="date">${Todo.date}</span>
-        <p class="m-0 p-0" id="comment">${Todo.comment}</p>
+        <span class="fw-bold ${Todo.id} ${Todo.statut}" id="task"><input class="inp" readonly value="${Todo.task}"/></span>
+        <span class="text-secondary small" id="date"><input type="date" class="inpDate" disabled value="${Todo.date}"/></span>
+        <p class="m-0 p-0" id="comment"><input type="text" readonly class="inpComment" value="${Todo.comment}"/></p>
         <div class="option justify-content-between d-flex gap-4 align-items-center">
             <div class="op1 d-flex gap-3 justify-content-center">
                 <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
@@ -77,18 +82,21 @@ function AddToBoard() {
 // Load tasks from local storage when the page is loaded
 window.addEventListener("load", load);
 
+// Load tasks from local storage when the page is loaded
+window.addEventListener("load", load);
+
 function load() {
     const storedTasks = localStorage.getItem("TasksStorage");
 
-    if (storedTasks) {
+    if (storedTasks) { 
         ToDoTasks = JSON.parse(storedTasks);
 
         for (const task of ToDoTasks) {
             tasks.innerHTML += `
             <li class="loadTasks bg-success bg-opacity-25 border border-success border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
-                <span class="fw-bold ${task.id}" id="task">${task.task}</span>
-                <span class="text-secondary small" id="date">${task.date}</span>
-                <p class="m-0 p-0" id="comment">${task.comment}</p>
+                <span class="fw-bold ${task.id} ${task.statut}" id="task"><input class="inp" readonly value="${task.task}"/></span>
+                <span class="text-secondary small" id="date"><input type="date" class="inpDate" disabled value="${task.date}"/></span>
+                <p class="m-0 p-0" id="comment"><input type="text" readonly class="inpComment" value="${task.comment}"/></p>
                 <div class="option justify-content-between d-flex gap-4 align-items-center">
                     <div class="op1 d-flex gap-3 justify-content-center">
                         <i class="fa-solid fa-pen-to-square fs-5" id="edit" onclick="Modify(this)" style="cursor: pointer;"></i>
@@ -101,7 +109,64 @@ function load() {
             </li>`;
         }
     }
+    addDoneClassToTasks();
+    HideArchivedTask();
 }
+function addDoneClassToTasks() {
+    const tasksList = document.querySelectorAll('.loadTasks');
+
+    tasksList.forEach(taskElement => {
+        const taskId = taskElement.querySelector('.fw-bold').classList[1];
+        const task = ToDoTasks.find(task => task.id === parseInt(taskId));
+
+        if (task && task.statut === true) {
+            taskElement.querySelector('.op1').classList.add('done');
+            const newClass = taskElement.querySelector('.op1').parentElement;
+            const archbtn = `
+                <div class="btns arch d-flex gap-3 justify-content-center">
+                    <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTask(this)">
+                        <i>Archiver</i>
+                    </button>
+                </div>`;
+            newClass.innerHTML += archbtn;
+        }
+    });
+}
+function HideArchivedTask() {
+    const tasksList = document.querySelectorAll('.loadTasks');
+
+    tasksList.forEach(taskElement => {
+        const taskId = taskElement.querySelector('.fw-bold').classList[1];
+        const task = ToDoTasks.find(task => task.id === parseInt(taskId));
+
+        if (task && task.archive === true) {
+            taskElement.classList.add('d-none');
+            archivedTasks.innerHTML += `
+            <li class="ArchiveLoad bg-danger bg-opacity-25 border border-danger border-2 border-opacity-50 rounded p-1 d-grid gap-3" id="tsk">
+                <span class="fw-bold ${task.id} ${task.statut}" id="task"><input class="inp" readonly value="${task.task}"/></span>
+                <span class="text-secondary small" id="date"><input type="date" class="inpDate" disabled value="${task.date}"/></span>
+                <p class="m-0 p-0" id="comment"><input type="text" readonly class="inpComment" value="${task.comment}"/></p>
+                <div class="option justify-content-between d-flex gap-4 align-items-center">
+                    <div class="op1 d-flex gap-3 justify-content-center">
+                        <i class="fa-solid fa-trash-alt fs-5" id="delete" onclick="Delete(this)" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+            </li>`;
+        }
+    });
+}
+function showArch(){
+    const archlist = document.querySelector(".archived").classList;
+    if(!archlist.contains("d-none")){
+        archlist.add("d-none");
+        document.querySelector(".ShowAndHide").textContent = "Show Archived Tasks";
+    }
+    else{
+        archlist.remove("d-none");
+        document.querySelector(".ShowAndHide").textContent = "Hide Archived Tasks";
+    }
+}
+
 
 // Delete Task
 function Delete(e) {
@@ -121,31 +186,39 @@ function Modify(e) {
     const taskToModify = ToDoTasks.find(task => task.id === parseInt(taskId));
 
     // Open the modal to edit the task
-    AddTask();
-    
-    // Update the input fields with the task details
-    TaskInput.value = taskToModify.task;
-    DateInput.value = taskToModify.date;
-    CommentInput.value = taskToModify.comment;
-    enableButton();
+    const toSelect = e.parentElement.parentElement.parentElement;
+    toSelect.querySelector('.inp').removeAttribute("readonly");
+    toSelect.querySelector('.inpDate').removeAttribute("disabled");
+    toSelect.querySelector('.inpComment').removeAttribute("readonly");
 
-    // Listen for changes to the task details
-    TaskInput.addEventListener("input", enableButton);
-    DateInput.addEventListener("input", enableButton);
+    // create div and buttons for modification and Cancellation
+    const DivButtonModify = document.createElement("div");
+    e.parentElement.parentElement.appendChild(DivButtonModify);
+    DivButtonModify.classList.add("Spicy");
 
-    // Add a save button
-    button.textContent = "Modifier";
-    button.onclick = function() {
-        // Check if there are modifications
-        const newTaskValue = TaskInput.value;
-        const newDateValue = DateInput.value;
-        const newCommentValue = CommentInput.value;
+    // Save button
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Modifier";
+    DivButtonModify.appendChild(saveButton);
+    saveButton.classList.add("save_Button");
 
-        if (
-            newTaskValue !== taskToModify.task ||
-            newDateValue !== taskToModify.date ||
-            newCommentValue !== taskToModify.comment
-        ) {
+    // Cancel button
+    const CancelButton = document.createElement("button");
+    CancelButton.textContent = "Annuler";
+    DivButtonModify.appendChild(CancelButton);
+    CancelButton.classList.add("Cancel_Button");
+
+    // Disable modify and Check Button
+    e.parentElement.querySelector("#edit").classList.add("locked");
+    e.parentElement.querySelector(".chkd").classList.add("locked");
+
+    // Modify button function
+    saveButton.addEventListener("click", () =>{
+        const newTaskValue = toSelect.querySelector('.inp').value;
+        const newDateValue = toSelect.querySelector('.inpDate').value;
+        const newCommentValue = toSelect.querySelector('.inpComment').value;
+
+        if (newTaskValue !== taskToModify.task || newDateValue !== taskToModify.date || newCommentValue !== taskToModify.comment) {
             // Update the task details if there are modifications
             taskToModify.task = newTaskValue;
             taskToModify.date = newDateValue;
@@ -153,85 +226,57 @@ function Modify(e) {
 
             // Update local storage with the modified ToDoTasks array
             AddToLclStr();
-
-            // Close the modal
-            CloseAdd();
+            
+            saveButton.style.display = "none";
+            e.parentElement.querySelector("#edit").classList.remove("locked");
             location.reload();
         }
-    };
+    })
+
+    // Cancel Function
+    CancelButton.addEventListener("click", () => {
+        AddToLclStr();
+        location.reload();
+    })
 }
-
-
-let archbtn = `
-  <div class="btns arch d-flex gap-3 justify-content-center">
-    <button class="btn btn-success btn-sm" id="archiveButton" onclick="ArchiveTasks(this)">
-      <i class="fa-solid fa-box-archive"></i>
-    </button>
-  </div>
-`;
-
-// Load archived tasks from local storage and apply necessary class changes
-const archivedTasks = JSON.parse(localStorage.getItem("ArchivedTasks") || "[]");
-
-archivedTasks.forEach((task) => {
-  const taskElement = document.querySelector(`.fw-bold`);
-  
-  if (taskElement !== null) {
-    taskElement.classList.add("archivedTask");
-  }
-});
-
-// Load checked tasks from local storage and apply necessary class changes
-const checkedTasks = localStorage.getItem("CheckedTasks") || "[]";
-
-JSON.parse(checkedTasks).forEach((task) => {
-  const taskElement = document.querySelector(`.fw-bold`);
-
-  if (taskElement !== null) {
-    taskElement.classList.add("checked");
-  }
-});
-
 function Checked(e) {
-  const taskElement = e.parentElement.parentElement;
-  taskElement.classList.add("done");
+    const taskId = e.parentElement.parentElement.parentElement.parentElement.querySelector('.fw-bold').classList[1];
+    const taskToCheck = ToDoTasks.find(task => task.id === parseInt(taskId));
 
-  const newClass = taskElement.parentElement;
-  newClass.innerHTML += archbtn;
-
-  // Store the checked task in local storage
-  const checkedTask = e.parentElement.parentElement.parentElement;
-  localStorage.setItem(`CheckedTasks`, JSON.stringify(checkedTask.textContent));
-
-  // Call the checkedTsk() function
-  checkedTsk();
+    if (taskToCheck) {
+        taskToCheck.statut = true;
+        taskToCheck.task += ` ✓`;
+        AddToLclStr();
+        location.reload();
+    }
 }
 
-function ArchiveTasks(e) {
-  const taskElement = e.parentElement.parentElement.parentElement.parentElement;
-  taskElement.classList.add("archived");
+function ArchiveTask(e) {
+    const taskId = e.parentElement.parentElement.parentElement.querySelector('.fw-bold').classList[1];
+    console.log(taskId);
+    const taskToCheck = ToDoTasks.find(task => task.id === parseInt(taskId));
+    if (taskToCheck) {
+        taskToCheck.archive = true;
+        taskToCheck.task += ` Archivée`;
+        AddToLclStr();
+        location.reload();
+    }
 
-  const taskId = taskElement.querySelector(".fw-bold").classList[1];
-  const taskData = {
+  /*const taskData = {
     id: taskId,
     task: taskElement.querySelector(".fw-bold").textContent,
     date: taskElement.querySelector(".text-secondary").textContent,
     comment: taskElement.querySelector(".m-0").textContent,
   };
+    const taskToUpdate = ToDoTasks.find(task => task.id === parseInt(taskId));
+    if (taskElement.textContent.contains("Terminée")) {
+    taskToUpdate.task += " - Archivée";
 
-  const archivedTasks = JSON.parse(localStorage.getItem("ArchivedTasks") || "[]");
-  archivedTasks.push(taskData);
-
-  localStorage.setItem("ArchivedTasks", JSON.stringify(archivedTasks));
-
-  taskElement.remove();
+    // Save changes to local storage
+    AddToLclStr();
+    }
+  taskElement.remove();*/
 }
 
-function checkedTsk() {
-  const done = [];
-
-  const doneTaskElements = document.querySelectorAll(".done");
-  done.push(...doneTaskElements);
-
-  localStorage.setItem("StockChecked", JSON.stringify(done));
-}
+addDoneClassToTasks();
+HideArchivedTask()

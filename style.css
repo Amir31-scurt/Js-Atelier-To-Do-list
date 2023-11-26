@@ -1,13 +1,46 @@
 .container{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  margin-top: 35px;
+  margin-bottom: 35px;
 }
+.inp{
+  width: 100%;
+  flex: 1 1 0%;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+}
+.inpComment{
+  flex: 1 1 0%;
+  background-color: transparent;
+  border: none;
+  width: 100%;
+}
+.inp:focus{
+  border: none;
+  outline: transparent;
+}
+.inp:active{
+  outline: #085f43;
+}
+.inpComment:focus{
+  outline: none;
+}
+.inpDate{
+  background-color: transparent;
+  border: none;
+  font-weight: 600;
+  font-size: 18px;
+  color: #6c757d;
+}
+/*input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}*/
 .done{
     pointer-events: none;
     filter: invert(0.30);
 	animation: scale-up-center 0.4s cubic-bezier(0.770, 0.000, 0.175, 1.000) both;
+  z-index: 33;
 }
 @keyframes scale-up-center {
     0% {
@@ -68,6 +101,20 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+.ArchiveLoad{
+  animation: 2.5s cubic-bezier(.25, 1, .30, 1) square-in-hesitate both;
+  @keyframes square-in-hesitate {
+    0% {
+      clip-path: inset(100% 100% 100% 100%);
+    }
+    40% {
+      clip-path: inset(33% 33% 33% 33%);
+    }
+    100% {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
 h3, p, span{
     font-size: clamp(1.5rem, 0.0774rem + 2vw, 5.625rem);
 }
@@ -118,4 +165,40 @@ h3, p, span{
   
 .arch{
     animation: 1s cubic-bezier(.25, 1, .30, 1) diamond-in-hesitate both;
+}
+.save_Button{
+  background-color: #13a067;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  padding: 5px 10px;
+  font-weight: bold;
+  animation: 1s cubic-bezier(.25, 1, .30, 1) diamond-in-hesitate both;
+}
+.save_Button:hover{
+  background-color: #0e7149;
+}
+.Cancel_Button{
+  color: #13a067;
+  border: 2px solid #13a067;
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: bold;
+  animation: 1s cubic-bezier(.25, 1, .30, 1) diamond-in-hesitate both;
+}
+.Cancel_Button:hover{
+  background-color: white;
+}
+.Spicy{
+  display: flex;
+  gap: 6px;
+}
+.locked{
+  color: #6c757d;
+  z-index: -1;
+  cursor: not-allowed;
+}
+.modifying{
+  z-index: -55;
 }
